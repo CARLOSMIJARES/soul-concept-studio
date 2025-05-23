@@ -109,7 +109,8 @@
 
   <!-- LÓGICA JS -->
   <script>
-    const servicios = [{ nombre: "ACRILICO (LARGO 1-2)", precio: 30, tiempo: 120 },
+    const servicios = [
+      { nombre: "ACRILICO (LARGO 1-2)", precio: 30, tiempo: 120 },
       { nombre: "ACRILICO (LARGO 3-4)", precio: 35, tiempo: 135 },
       { nombre: "BABY BOOMER", precio: 35, tiempo: 120 },
       { nombre: "CAPA FLEX (REFUERZO)", precio: 25, tiempo: 120 },
@@ -132,7 +133,8 @@
       { nombre: "SOLO CORTAR UÑAS (PIES)", precio: 5, tiempo: 30 },
       { nombre: "UÑA ROTA (MANOS)", precio: 2, tiempo: 15 },
       { nombre: "UÑA ROTA (PIES)", precio: 3, tiempo: 15 },
-      { nombre: "UÑAS ENCARNADAS", precio: 2, tiempo: 5 },];
+      { nombre: "UÑAS ENCARNADAS", precio: 2, tiempo: 5 }
+    ];
 
     const serviciosContainer = document.getElementById("serviciosContainer");
     const agregarBtn = document.getElementById("agregarServicioBtn");
@@ -240,17 +242,22 @@
         return alert("Completa todos los campos");
       }
 
-      const total = serviciosElegidos.reduce((acc, nombre) => {
+      let total = 0;
+      let duracion = 0;
+      for (const nombre of serviciosElegidos) {
         const srv = servicios.find(s => s.nombre === nombre);
-        return acc + (srv ? srv.precio : 0);
-      }, 0);
+        if (srv) {
+          total += srv.precio;
+          duracion += srv.tiempo;
+        }
+      }
 
       await db.collection("reservas").add({
-        nombre, email, fecha, hora, servicios: serviciosElegidos, manicurista, total,
+        nombre, email, fecha, hora, servicios: serviciosElegidos, manicurista, total, duracion,
         timestamp: firebase.firestore.FieldValue.serverTimestamp()
       });
 
-      const resumen = `Nombre: ${nombre}<br>Email: ${email}<br>Fecha: ${fecha}<br>Hora: ${hora}<br>Manicurista: ${manicurista}<br>Servicios: ${serviciosElegidos.join(", ")}<br>Total: €${total}`;
+      const resumen = `Nombre: ${nombre}<br>Email: ${email}<br>Fecha: ${fecha}<br>Hora: ${hora}<br>Manicurista: ${manicurista}<br>Servicios: ${serviciosElegidos.join(", ")}<br>Total: €${total}<br>Duración: ${duracion} min`;
       document.getElementById("resumenContenido").innerHTML = resumen;
       document.getElementById("resumenModal").classList.remove("hidden");
       document.getElementById("sonidoConfirmacion").play();
@@ -263,3 +270,4 @@
   </script>
 </body>
 </html>
+<!-- 👆 FIN DEL HTML -->
